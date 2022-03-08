@@ -1,0 +1,16 @@
+# setup dependencies
+git
+wget
+vim
+
+# shell and shell related packages
+zsh
+
+# system stuff that's nice to have
+apt-listchanges
+traceroute
+build-essential
+
+# funsies any self respecting linux person would probably add
+sl
+cowsay
