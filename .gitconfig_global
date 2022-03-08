@@ -1,0 +1,40 @@
+[alias]
+	s = status
+	co = checkout
+	up = checkout
+	update = checkout
+	c = commit
+	cp = cherry-pick
+	rb = rebase
+	m = merge
+	mg = merge
+	a = add
+	d = diff
+	j = pull
+	k = push
+	f = fetch
+	sb = submodule
+	sm = submodule
+	smu = submodule update --init --recursive
+	sbu = submodule update --init --recursive
+	count = !git shortlog -sn
+	l = log --oneline --abbrev --graph --decorate
+	stash = -c commit.gpgsign=false stash
+	ci = ci-status -v
+	pr = pull-request
+	shallow-clone = clone --depth=1
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = true
+[core]
+	excludesfile = ~/.gitignore_global
+[difftool]
+	prompt = false
+[help]
+	autocorrect = 10
+[push]
+	default = current
+	recurseSubmodules = check
+

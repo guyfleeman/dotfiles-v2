@@ -1,0 +1,7 @@
+[user]
+	email = guyfleeman@gmail.com
+	name = Will Stuckey
+[core]
+	excludesfile = /home/guyfleeman/.gitignore_global
+[include]
+	path = ./.gitconfig_global

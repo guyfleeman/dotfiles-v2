@@ -176,3 +176,5 @@ else
 
 	echo "Installed Oh-My-Zsh"
 fi
+
+su $SETUP_USER -c ./setup_no_root.bash
