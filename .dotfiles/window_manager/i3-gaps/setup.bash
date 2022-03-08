@@ -52,6 +52,9 @@ if [ -f "$CONFIG_DIR/config" ]; then
 fi
 
 echo "Linking the config file..."
+if [ -f $CONFIG_DIR/config ]; then
+	rm -f $CONFIG_DIR/config
+fi
 ln -s $BASE/config $CONFIG_DIR/config
 
 # fix perms since root setup this up
