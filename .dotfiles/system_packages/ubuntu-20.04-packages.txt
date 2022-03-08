@@ -10,6 +10,7 @@ zsh
 apt-listchanges
 traceroute
 build-essential
+htop
 
 # funsies any self respecting linux person would probably add
 sl

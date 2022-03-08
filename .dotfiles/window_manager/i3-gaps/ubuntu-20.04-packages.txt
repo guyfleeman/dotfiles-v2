@@ -3,3 +3,4 @@ i3status
 i3lock-fancy
 dunst
 compton
+feh

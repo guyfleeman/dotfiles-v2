@@ -14,7 +14,11 @@ set $mod Mod1
 
 # start compositing, the daemonize flag doesn't work on VMs
 #exec compton -CGb
-exec compton -CG &
+# exec compton -CG &
+exec --no-startup-id ~/.dotfiles/window_manager/i3-gaps/graphical_sequence_startup.bash
+
+# fix screen layout
+# exec ~/.dotfiles/arrange_monitors_x.bash
 
 # default workspaces
 # exec --no-startup-id i3-msg 'workspace 10; exec spotify'
@@ -25,7 +29,7 @@ exec killall -q notify-osd
 exec --no-startup-id dunst
 
 # wallpaper
-exec /usr/bin/feh --bg-scale ~/.dotfiles/wallpapers/solarized_minimal.jpg
+# exec ~/.dotfiles/window_manager/i3-gaps/setup_wallpaper_multi.bash
 
 # stop sleep bugs
 exec --no-startup-id xset s off
