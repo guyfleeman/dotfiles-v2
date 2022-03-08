@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 HELP_STR="Usage: ./setup.bash [--i3 | --i3-gaps] | --help"
 
 operating_system='none'
@@ -9,7 +11,7 @@ window_manager='none'
 for i in "$@"
 do
 	case $i in
-	--i3gaps)
+	--i3-gaps)
 	
 		window_manager='i3-gaps'
 		;;
@@ -19,6 +21,7 @@ do
 	-h|--help)
 		echo -e "\n$HELP_STR"
 		exit 0
+		;;
 	*)
  		echo "Unrecognized Option: $i"
 		echo -e "\n$HELP_STR"
@@ -58,7 +61,7 @@ mkdir -p build
 #############
 
 PKGS_FILE="system_packages/$operating_system-packages.txt"
-PACKAGES="$(sed 's/#.*//;/^$/d' $PKGS_FILE)"
+PACKAGES="$(sed 's/#.*//;/^$/d' ${PKGS_FILE})"
 if [ "$operating_system" = "ubuntu-20.04" ]; then
 	apt update
 	apt install -y $PACKAGES
@@ -85,7 +88,7 @@ fi
 
 # check if .oh-my-zsh is installed
 if [ -d "/home/$SETUP_USER/.oh-my-zsh" ]; then
-	git --git-dir=/home/$SETUP_USER/.oh-my-zsh/.git status > /dev/null
+	git --git-dir=/home/$SETUP_USER/.oh-my-zsh status > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "Oh-My-Zsh exists but the repo is in an invalid state."
 		echo "Will not clone."
@@ -96,14 +99,44 @@ else
 	echo "No Oh-My-Zsh folder was found. Will run RR inst."
 
 	echo "Installing oh-my-zsh..."
-	wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | bash -s - --unattended
+	pushd build
+
+	if [ ! -d oh-my-zsh ]; then
+		mkdir oh-my-zsh
+	fi
+	pushd oh-my-zsh
+
+	if [ -f install.sh ]; then 
+		rm install.sh
+	fi
+	wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+	chmod 555 install.sh
+
+	# install for root
+	if [ ! -d /root/.oh-my-zsh ]; then
+		echo "Installing ZSH for root"
+		./install.sh --unattended
+	fi
+
+	# install for user
+	if [ ! -d /home/$SETUP_USER/.oh-my-zsh ]; then
+		echo "Installing ZSH for $SETUP_USER"
+		su $SETUP_USER -c "./install.sh --unattended --keep-zshrc"
+	fi
+
+	popd
+	popd
 
 	echo "Installing powerlevel9k extensions..."
 	git clone https://github.com/bhilburn/powerlevel9k.git /home/$SETUP_USER/.oh-my-zsh/custom/themes/powerlevel9k
 
 	echo "Fixing permissions..."
 	chown -R $SETUP_USER:$SETUP_USER /home/$SETUP_USER/.oh-my-zsh
-	chown $SETUP_USER:$SETUP_USER /home/$SETUP_USER/.zshrc
+
+	if [ -f /home/$SETUP_USER/.oh-my-zsh ]; then
+		chown $SETUP_USER:$SETUP_USER /home/$SETUP_USER/.zshrc
+	fi
+
 	if [ -f /home/$SETUP_USER/.zsh_history ]; then
 		chown $SETUP_USER:$SETUP_USER /home/$SETUP_USER/.zsh_history
 	fi
@@ -115,16 +148,24 @@ else
 
 	pushd build
 
+	# build powerline
 	echo "Will perform one time install of powerline fonts."
-	git clone https://github.com/powerline/fonts.git --depth=1
+	if [ ! -f fonts ]; then
+		git clone https://github.com/powerline/fonts.git --depth=1
+	fi
+
 	pushd fonts
 	./install.sh
 	su $SETUP_USER -c ./install.sh
 	popd
 	#rm -rf fonts
 
+	# build nerd fonts
 	echo "Will perform one time install of nerd font glyphs."
-	git clone https://github.com/ryanoasis/nerd-fonts.git --depth=1
+	if [ ! -f nerd-fonts ]; then
+		git clone https://github.com/ryanoasis/nerd-fonts.git --depth=1
+	fi
+
 	pushd nerd-fonts
 	./install.sh
 	su $SETUP_USER -c ./install.sh

@@ -1,0 +1,127 @@
+#!/bin/zsh
+
+# A function to see if a command exists. Basically cross platform which
+exists() {
+	command -v $1 >/dev/null
+	return $?
+}
+
+# set ls colors
+alias ls='ls --color=always'
+# Fix broken colors
+LS_COLORS="$LS_COLORS:ow=7;32"
+
+# ls aliases
+alias ll='ls -l'
+alias la='ls -la'
+
+# cp fast
+alias cp='cp --reflink=auto'
+
+# When using sudo, use alias expansion (otherwise sudo ignores your aliases)
+# Preserve sudo XDG as well
+# alias sudo='sudo env XDG_CONFIG_HOME=$XDG_CONFIG_HOME '
+alias sudo='sudo '
+alias s='sudo '
+alias se='sudoedit'
+
+open() {
+    xdg-open $1 &> /dev/null &
+}
+
+# alias calc to qualculate-gtk
+alias calc='qalc'
+
+# make sl even better
+alias LS='sl'
+alias SL='sl'
+alias cls='clear'
+
+if exists popd; then
+	# alias popd, pushd happens automagically
+	alias bk='popd'
+	alias jk='popd'
+	alias kj='popd'
+	alias pp='popd'
+	alias pop='popd'
+fi
+
+if exists optirun; then
+	alias nvidia-smi='optirun nvidia-smi'
+fi
+
+# Heh. Heh,
+alias nano='vim'
+
+if exists git; then
+	alias g='git'
+	alias gs='git status'
+	alias gr='cd $(git rev-parse --show-toplevel)'
+
+	alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+fi
+
+if exists xclip; then
+	alias c='xclip -selection c'
+	alias p='xclip -out -selection c'
+fi
+
+if exists make; then
+	alias m='make'
+fi
+
+alias py='python'
+if exists python3; then
+	alias py3='python3'
+fi
+
+if exists python2; then
+	alias py2='python2'
+fi
+
+if exists feh; then
+	alias feh='feh --scale-down'
+fi
+
+# Always use gpg2
+if exists gpg2; then
+	alias gpg='gpg2'
+fi
+
+alias grep='grep --color=always'
+
+if exists dmesg; then
+	alias dmesg='dmesg --color=always'
+fi
+
+if exists rg; then
+	alias rg='rg -S --color=always --ignore-file $HOME/.config/ripgrep/ignore'
+fi
+
+# systemd
+if exists systemctl; then
+	alias sc='systemctl'
+	alias scu='systemctl --user'
+	alias jc='journalctl'
+	alias jcu='journalctl --user'
+fi
+
+# File associations (running non +x files)
+if exists c; then
+	alias c='c'
+	alias cc='c'
+	alias cpp='c'
+	alias hpp='c'
+fi
+
+if exists python3; then
+	alias py='python3'
+elif exists python; then
+	alias py='python'
+fi
+
+if exists perf; then
+	alias perfdoctorme='sudo sh -c "echo 0 >/proc/sys/kernel/perf_event_paranoid"'
+	alias unperfdoctorme='sudo sh -c "echo 3 >/proc/sys/kernel/perf_event_paranoid"'
+fi
+
