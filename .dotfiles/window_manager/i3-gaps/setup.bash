@@ -36,6 +36,10 @@ PACKAGES="$(sed 's/#.*//;/^$/d' $PACKAGE_LIST)"
 apt update
 apt install -y $PACKAGES
 
+if [ -f /usr/share/xsessions/i3.desktop ]; then
+	cp i3.desktop /usr/share/xsessions
+fi
+
 # get the non-root user to fix config file perms
 SETUP_USER="$SUDO_USER"
 if [ -z "$SETUP_USER" ]; then
