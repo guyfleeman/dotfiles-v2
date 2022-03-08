@@ -7,6 +7,12 @@ export ZSH=/home/$USERNAME/.oh-my-zsh
 
 source $HOME/.zsh_aliases
 
+if hostname | grep "tmpo"; then
+	DEFAULT_USER="wstuckey3-gtri"
+else
+	DEFAULT_USER="guyfleeman"
+fi
+
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 plugins=(git vi-mode)
 
