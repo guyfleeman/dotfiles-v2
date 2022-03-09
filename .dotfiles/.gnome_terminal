@@ -16,7 +16,7 @@ use-theme-transparency=false
 scrollback-unlimited=true
 cursor-blink-mode='on'
 background-color='rgb(0,43,54)'
-background-transparency-percent=27
+background-transparency-percent=10
 audible-bell=false
 
 [legacy]

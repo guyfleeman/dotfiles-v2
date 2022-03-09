@@ -12,31 +12,23 @@
 # mod
 set $mod Mod1
 
-# start compositing, the daemonize flag doesn't work on VMs
-#exec compton -CGb
-# exec compton -CG &
-exec --no-startup-id ~/.dotfiles/window_manager/i3-gaps/graphical_sequence_startup.bash
-
-# fix screen layout
-# exec ~/.dotfiles/arrange_monitors_x.bash
+# runs graphical prereqs b4 continuting (compton, layout, bg images)
+exec --no-startup-id ~/.dotfiles/window_manager/i3-gaps/graphical_sequence_startup.bash ~/.dotfiles/wallpapers/big_leaves.jpg
 
 # default workspaces
 # exec --no-startup-id i3-msg 'workspace 10; exec spotify'
 # exec --no-startup-id i3-msg 'workspace 1; exec qutebrowser'
 
 # notifications 
-exec killall -q notify-osd
+exec --no-startup-id killall -q notify-osd
 exec --no-startup-id dunst
-
-# wallpaper
-# exec ~/.dotfiles/window_manager/i3-gaps/setup_wallpaper_multi.bash
 
 # stop sleep bugs
 exec --no-startup-id xset s off
 
 # i3 bar icons
 # exec --no-startup-id nm-applet
-# exec --no-startup-id pasystray
+exec --no-startup-id pasystray
 
 # audio fix
 #bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
@@ -142,6 +134,17 @@ bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
+
+# workspace layout
+set $primary_screen DisplayPort-4
+set $left_wing DisplayPort-5
+set $right_wing DisplayPort-6
+set $tv HDMI-A-1
+
+workspace 1 output $left_wing
+workspace 2 output $primary_screen
+workspace 3 output $right_wing
+workspace 10 output $tv $right_wing
 
 # switch to workspace
 bindsym $mod+1 workspace 1

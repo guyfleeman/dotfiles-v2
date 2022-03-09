@@ -4,3 +4,4 @@ i3lock-fancy
 dunst
 compton
 feh
+pasystray

@@ -12,6 +12,10 @@ traceroute
 build-essential
 htop
 
+# ricing
+neofetch
+
+
 # funsies any self respecting linux person would probably add
 sl
 cowsay
