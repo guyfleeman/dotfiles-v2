@@ -4,6 +4,7 @@ set -e
 
 HELP_STR="Usage: ./setup.bash [--i3 | --i3-gaps] | --help"
 
+music_stuff=false
 operating_system='none'
 window_manager='none'
 
@@ -17,6 +18,9 @@ do
 		;;
         --i3)
 		window_manager='i3'
+		;;
+	--music)
+		music_stuff=true
 		;;
 	-h|--help)
 		echo -e "\n$HELP_STR"
@@ -88,6 +92,8 @@ fi
 
 # check if .oh-my-zsh is installed
 if [ -d "/home/$SETUP_USER/.oh-my-zsh" ]; then
+	set +e
+
 	git --git-dir=/home/$SETUP_USER/.oh-my-zsh status > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "Oh-My-Zsh exists but the repo is in an invalid state."
@@ -95,6 +101,8 @@ if [ -d "/home/$SETUP_USER/.oh-my-zsh" ]; then
 	else
 		echo "Oh-My-Zsh found."
 	fi
+
+	set -e
 else
 	echo "No Oh-My-Zsh folder was found. Will run RR inst."
 
@@ -174,7 +182,109 @@ else
 
 	popd # build/
 
+	echo "Updating shell..."
+	chsh -s /usr/bin/zsh $SETUP_USER
+
 	echo "Installed Oh-My-Zsh"
 fi
+
+###########
+#  Snaps  #
+###########
+
+if echo "$operating_system" | grep -i "ubuntu"; then
+	echo "Will install snaps..."
+	SNAPS_FILE="system_packages/ubuntu-snaps.txt"
+	SNAPS="$(sed 's/#.*//;/^$/d' ${SNAPS_FILE})"
+	SNAP_ARR=($SNAPS)
+	for snp in "${SNAP_ARR[@]}"; do
+		snap install --classic $snp
+	done
+fi
+
+#################
+#  Tizonia/Viz  #
+#################
+
+if $music_stuff; then
+	pushd build/
+
+	if [ ! -d tizonia-openmax-il ]; then
+		git clone https://github.com/tizonia/tizonia-openmax-il.git
+	fi
+
+	if [ ! -d cli-visualizer ]; then
+		git clone https://github.com/dpayne/cli-visualizer.git
+	fi
+
+	export TIZONIA_REPO_DIR=$(pwd)/tizonia-openmax-il
+	export TIZONIA_INSTALL_DIR=/usr
+	export PATH=$TIZONIA_REPO_DIR/tools:$PATH
+	if [ "$operating_system" = "ubuntu-20.04" ]; then
+		sudo -H pip3 install meson --upgrade
+		apt install -y libfftw3-dev libncursesw5-dev cmake libpulse-dev ninja-build
+
+		if ! command -v tizonia; then
+			export PYTHONPATH=$TIZONIA_INSTALL_DIR/lib/python3.8/site-packages:$PYTHONPATH
+			
+			tizonia-dev-build --deps
+
+			pushd tizonia-openmax-il
+
+			meson --buildtype=plain \
+				--prefix=/usr \
+				--libdir=/usr/lib \
+				--libexecdir=/usr/lib \
+				--bindir=/usr/bin \
+				--sbindir=/usr/sbin \
+				--includedir=/usr/include \
+				--datadir=/usr/share \
+				--mandir=/usr/share/man \
+				--infodir=/usr/share/info \
+				--localedir=/usr/share/locale \
+				--sysconfdir=/etc \
+				--localstatedir=/var \
+				--sharedstatedir=/var/lib \
+				--wrap-mode=nodownload \
+				--auto-features=enabled \
+				. build
+
+			ninja -v -j1 -C build
+			ninja install -v -j1 -C build
+
+			popd # tizonia
+		fi
+
+		if ! command -v vis; then
+			pushd cli-visualizer
+
+			mkdir -p build/
+			pushd build
+
+			cmake ..
+			make clean
+			make -j$(nproc) ENABLE_PULSE=1
+			make install
+
+			$CFG_DIR=/home/$SETUP_USER/.config/vis
+			mkdir -p $CFG_DIR/colors
+
+			cp examples/config $CFG_DIR
+			cp examples/rainbow $CFG_DIR/colors
+			cp eaxmples/basic_colors $CFG_DIR/colors
+
+			chown -R $SETUP_USER:$SETUP_USER $CFG_DIR
+
+			popd # build
+			popd # cli-visualizer
+		fi
+	fi
+
+	popd # build
+fi
+
+################
+#  User Setup  #
+################
 
 su $SETUP_USER -c ./setup_no_root.bash

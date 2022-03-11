@@ -11,6 +11,8 @@ apt-listchanges
 traceroute
 build-essential
 htop
+apparmor-profiles
+apparmor-utils
 
 # ricing
 neofetch

@@ -1,0 +1,3 @@
+spotify
+pycharm-community
+intellij-idea-community
