@@ -125,3 +125,9 @@ if exists perf; then
 	alias unperfdoctorme='sudo sh -c "echo 3 >/proc/sys/kernel/perf_event_paranoid"'
 fi
 
+if exists tizonia; then
+	alias tz_al='tizonia --spotify-album'
+	alias tz_pl='tizonia --spotify-playlist'
+	alias tz_tr='tizonia --spotify-tracks'
+	alias tz_ar='tizonia --spotify-artist'
+fi
