@@ -4,6 +4,7 @@ set -e
 
 HELP_STR="Usage: ./setup.bash [--i3 | --i3-gaps] | --help"
 
+rebind_esc=false
 music_stuff=false
 operating_system='none'
 window_manager='none'
@@ -21,6 +22,9 @@ do
 		;;
 	--music)
 		music_stuff=true
+		;;
+	--rebind)
+		rebind_esc=true
 		;;
 	-h|--help)
 		echo -e "\n$HELP_STR"
@@ -281,6 +285,22 @@ if $music_stuff; then
 	fi
 
 	popd # build
+fi
+
+####################
+#  Rebind Esc Key  #
+####################
+
+if $rebind_esc; then
+	if [ "$operating_system" = "ubuntu-20.04" ]; then
+		UBUNTU_REMAP_SERVICE="/etc/systemd/system/kern_key_map.service"
+		if [ ! -f "$UBUNTU_REMAP_SERVICE" ]; then
+			cp kern_key_map.service /etc/systemd/system
+			systemctl daemon-reload
+		fi
+	
+		systemctl enable kern_key_map
+	fi
 fi
 
 ################

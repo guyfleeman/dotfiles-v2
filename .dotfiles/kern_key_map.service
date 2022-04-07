@@ -1,0 +1,10 @@
+[Unit]
+Description=Priviledged rebind of keys (caps<->esc, rshift->lctrl, lalt->win (38 125))
+
+[Service]
+Type=oneshot
+RemainAfterExit=True
+ExecStart=/usr/bin/setkeycodes 3a 1 01 58 36 29
+
+[Install]
+WantedBy=graphical.target

@@ -5,6 +5,7 @@ vim
 
 # shell and shell related packages
 zsh
+ranger
 
 # system stuff that's nice to have
 apt-listchanges
