@@ -18,6 +18,8 @@ apparmor-utils
 # ricing
 neofetch
 
+# python
+python3-pip
 
 # funsies any self respecting linux person would probably add
 sl

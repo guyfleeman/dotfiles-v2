@@ -1,7 +1,9 @@
 #!/bin/bash
 
 HOSTNAME=$(hostname)
-if [ "$HOSTNAME" = "maven-dL01" ]; then
+if [ "$HOSTNAME" = "maven-desktop" ]; then
+	xrandr --dpi 220
+
 	#xrandr --output DisplayPort-5 --left-of DisplayPort-4
 	#xrandr --output DisplayPort-4 --left-of DisplayPort-6
 	if xrandr | grep "HDMI-A-1 connected"; then

@@ -228,7 +228,10 @@ if $music_stuff; then
 		sudo -H pip3 install meson --upgrade
 		apt install -y libfftw3-dev libncursesw5-dev cmake libpulse-dev ninja-build
 
-		if ! command -v tizonia; then
+		# libspotify was sunset in May, 2022
+		# reenable once Tizonia is patched upstream
+		if false; then
+		# if ! command -v tizonia; then
 			export PYTHONPATH=$TIZONIA_INSTALL_DIR/lib/python3.8/site-packages:$PYTHONPATH
 			
 			tizonia-dev-build --deps
